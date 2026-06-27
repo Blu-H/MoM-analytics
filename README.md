@@ -79,3 +79,20 @@ Make changes using your desktop IDE or GitHub Codespaces.
 2. Assign at least one reviewer.
 3. Address review comments if any.
 
+## Guidelines for analytical PRs
+### Best practices
+
+- Include context for each calculated output: date&time of analysis time range for analysed files, amount of files analyzed vs. expected, what was missing (why, is applicable)
+- Keep inline comments for every section and function to describe the purpose and output
+- Wrap reusable code into single-purpose functions, with variable inputs (e.g. function "calculate_parameter_stats" with input variables "file_name", "parameter_name") 
+- Keep Python naming convention and syntax (e.g. 'file_name' instead of 'FileName')
+- Keep strict typing for function inputs and outputs (e.g. 'def calculate_parameter_stats (file_name: str, parameter_name: str) -> dict: ...') and for declaring new variables (e.g. 'file_name: str = "" ')
+- Keep all imports and constant variables in the beginning of the python file. 
+- Keep all references to the original data (e.g. URLs) as environmental variables, with values never exposed in the code. 
+
+### Setup for Codespaces in forks
+- Choose the VM for your codespaces considering how much CPU, RAM and storage you need. For this case, the limiting factor is storage, so choose the machine with 1.5-2x larger storage than the data you are planning to download. You can choose to analyse a small time range to start with. 
+- Install required libraries, e.g. pandas, scipy, chosen library for graphs and plots etc. 
+- Add all URLs for the analysis as environmental variables (inside a local .env file). Create (if doesn't exist) .gitignore file to the repo and add (if not added yet) .env entry there. This will ensure local variables are never committed to the online repo. (Pls email me if you don't have the link to the data).
+- Calculate the outputs and delete the large downloaded files once finished - otherwise they will persist even when the codespaces is stopped, and count towards your monthly quota. 
+- Be careful with fetching and reading the data. When downloading the files from the server, make sure to not call the server thousands of times per second - we don't have the infrastructure to handle it yet. When reading the files for overall statistics, you might want to create a dataframe and add the data from all files to memory, one by one. The risk is that you will run out of RAM: all data can take >100 Gb. For overall statistics, I suggest analysing every parameter individually, so when assembling a huge dataframe from all files, you will massively reduce the required memory. 
